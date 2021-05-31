@@ -526,7 +526,7 @@ pos_t hash4_16(pos_t n, hash_t* RES result, T* RES input)
 {
    static_assert(sizeof(T) == 4, "Can only be used for inputs types of size 4");
    size_t rest = n % 16;
-   Vec16u seeds(seed);
+   Vec16u seeds(static_cast<uint32_t>(seed));
    for (uint64_t i = 0; i < n - rest; i += 16) {
       Vec16u in(input + i);
       auto hashes = Op().hashKey(
@@ -627,7 +627,7 @@ pos_t hash4_16_sel(pos_t n, pos_t* RES inSel, hash_t* RES result, T* RES input)
 {
    static_assert(sizeof(T) == 4, "Can only be used for inputs types of size 4");
    size_t rest = n % 16;
-   Vec16u seeds(seed);
+   Vec16u seeds(static_cast<uint32_t>(seed));
    __mmask16 all = ~0;
    for (uint64_t i = 0; i < n - rest; i += 16) {
       Vec16u inSels(inSel + i);

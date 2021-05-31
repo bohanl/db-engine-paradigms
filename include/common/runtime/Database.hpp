@@ -64,7 +64,7 @@ class BlockRelation {
 
  public:
    BlockRelation() = default;
-   BlockRelation(BlockRelation&&) = default;
+   BlockRelation(BlockRelation&&) = delete;
    BlockRelation(const BlockRelation&) = delete;
    ~BlockRelation();
 

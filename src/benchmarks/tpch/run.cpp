@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
            insert_iterator<decltype(q)>(q, q.begin()));
    }
 
-   tbb::task_scheduler_init scheduler(nrThreads);
+   tbb::task_arena scheduler(nrThreads);
    if (q.count("1h"))
       e.timeAndProfile("q1 hyper     ", nrTuples(tpch, {"lineitem"}),
                        [&]() {

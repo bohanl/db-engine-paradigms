@@ -2,7 +2,7 @@
 #include "common/Compat.hpp"
 #include <cassert>
 #include <cstring>
-#include <experimental/string_view>
+#include <string_view>
 #include <fcntl.h>
 #include <iostream>
 #include <stdexcept>
@@ -210,9 +210,7 @@ void Vector<T>::writeBinary(const char* pathname, std::vector<T>& v) {
    check(close(fd) == 0);
 }
 
-typedef std::experimental::string_view str;
-
-template <> struct Vector<str> {
+template <> struct Vector<std::string_view> {
    struct Data {
       uint64_t count;
       struct {
@@ -238,7 +236,7 @@ template <> struct Vector<str> {
       uint64_t fileSize = 8 + 16 * v.size();
       for (auto s : v) fileSize += s.size() + 1;
       check(compat::posix_fallocate(fd, 0, fileSize) == 0);
-      auto data = reinterpret_cast<Vector<str>::Data*>(
+      auto data = reinterpret_cast<Vector<std::string_view>::Data*>(
           mmap(nullptr, fileSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0));
       data->count = v.size();
       check(data != MAP_FAILED);
@@ -268,9 +266,9 @@ template <> struct Vector<str> {
 
    uint64_t size() { return data_->count; }
    Data* data() const { return data_; }
-   str operator[](std::size_t idx) {
+   std::string_view operator[](std::size_t idx) {
       auto slot = data_->slot[idx];
-      return str(reinterpret_cast<char*>(data_) + slot.offset, slot.size);
+      return std::string_view(reinterpret_cast<char*>(data_) + slot.offset, slot.size);
    }
 };
 } // namespace runtime
